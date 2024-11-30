@@ -1,0 +1,63 @@
+server:
+  port: 9090
+  address: 0.0.0.0
+
+host:
+  iam: http://localhost:9091
+  product: http://localhost:9094
+  media: http://localhost:9095
+  inventory: http://localhost:9096
+
+spring:
+  data:
+    redis:
+      database: 0
+      host: localhost
+      port: 6379
+      timeout: 60000
+  application:
+    name: api
+  profiles:
+    active: "dev"
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    inetutils:
+#      default-hostname: localhost
+#      default-ip-address: 127.0.0.1
+      ignored-interfaces: .*
+
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
+        web: DEBUG
+
+#  cloud:
+#    gateway:
+#      default-filters:
+#        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+#      globalcors:
+#        cors-configurations:
+#          '[/**]':
+#            allowed-origins: "*"
+#            allowed-methods: "*"
+#            allowed-headers: "*"
+#            allow-credentials: true
+#      routes:
+#        - id: auth
+#          uri: http://localhost:9091
+#          predicates:
+#            - Path=/api/v1/auth/**
+#          filters:
+#            - RewritePath=(?<segment>.*), $\{segment}
+#        - id: product
+#          uri: http://localhost:9093
+#          predicates:
+#            - Path=/api/v1/product/**
+#          filters:
+#            - RewritePath=/api/v1/product/(?<segment>.*), $\{segment}

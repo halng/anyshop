@@ -23,8 +23,8 @@ import { iconSubset } from './icons/icon-subset';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  tabTitle = 'Mega Store';
-  title = 'Welcome to Mega Store';
+  tabTitle = 'Any Shop';
+  title = 'Welcome to Any Shop';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);

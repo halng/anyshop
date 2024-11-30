@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { UserCreate } from '../types';
-
+import {environment} from '../../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  BASE_URL = 'http://localhost:5051/api/v1/iam'; // TODO: change the base url to api gateway instead of direct server
-  authKey = 'megastore_auth_credentials';
-  authExpireKey = 'megastore_auth_expire';
+  HOST = environment.HOST;
+  BASE_URL = `${this.HOST}/api/v1/iam`;
+  authKey = environment.LOCAL_STORAGE.AUTH_KEY;
+  authExpireKey = environment.LOCAL_STORAGE.AUTH_EXPIRE_KEY;
 
   constructor(private http: HttpClient) {}
 
