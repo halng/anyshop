@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/halng/anyshop/constants"
 	"github.com/halng/anyshop/db"
@@ -12,7 +15,6 @@ import (
 	"github.com/halng/anyshop/utils"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 )
 
 // ========================= Functions =========================
@@ -58,6 +60,7 @@ func CreateStaff(c *gin.Context) {
 	account.LastName = userInput.LastName
 	account.FirstName = userInput.FirstName
 	account.CreateBy = requesterId
+	account.Status = constants.ACCOUNT_STATUS_INACTIVE
 
 	// get role id for staff
 	roleId, err := models.GetRoleIdByName(models.RoleStaff)
@@ -142,4 +145,47 @@ func Validate(c *gin.Context) {
 	c.Header(constants.ApiUserRoles, role)
 	c.Header(constants.ApiUserRequestHeader, username)
 
+}
+
+func Activate(c *gin.Context) {
+	token := c.Query("token")
+	username := c.Query("username")
+	
+	if token == "" || username == "" {
+		ResponseErrorHandler(c, http.StatusBadRequest, constants.MissingParams, nil)
+		return
+	}
+
+	savedData, err := db.GetDataFromKey("active_" + username)
+	if err != nil || savedData == nil {
+		ResponseErrorHandler(c, http.StatusNotFound, constants.TokenNotFount, nil)
+		return
+	}
+	
+	var savedDataDto dto.ActiveNewUserMsg
+	if err = json.Unmarshal(savedData.([]byte), &savedDataDto); err != nil {
+		ResponseErrorHandler(c, http.StatusInternalServerError, constants.InternalServerError, nil)
+		return
+	}
+
+	
+	if token != savedDataDto.Data.Token {
+		ResponseErrorHandler(c, http.StatusUnauthorized, constants.TokenNotFount, nil)
+		return
+	}
+
+	account, err := models.GetAccountByUsername(username)
+	if err != nil {
+		ResponseErrorHandler(c, http.StatusNotFound, constants.AccountNotFound, nil)
+		return
+	}
+
+	account.Status = constants.ACCOUNT_STATUS_ACTIVE
+	_, err = account.SaveAccount()
+	if err != nil {
+		ResponseErrorHandler(c, http.StatusInternalServerError, constants.InternalServerError, nil)
+		return
+	}
+
+	ResponseSuccessHandler(c, http.StatusOK, nil)
 }

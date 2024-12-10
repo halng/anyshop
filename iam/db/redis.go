@@ -31,7 +31,7 @@ func SaveActiveTokenToCache(username string, data interface{}) error {
 	ctx := context.Background()
 
 	redisClient := DB.Redis
-	key := "active_" + username
+	key := "active_" + username 
 	err := redisClient.Set(ctx, key, data, time.Duration(DefaultCacheExpireTime)*time.Hour).Err()
 	return err
 }

@@ -51,6 +51,7 @@ func main() {
 	groupV1.POST("/login", handlers.Login)
 	groupV1.POST("/create-staff", middleware.ValidateRequest, handlers.CreateStaff)
 	groupV1.GET("/validate", handlers.Validate)
+	groupV1.POST("/activate", handlers.Activate)
 
 	err = router.Run(":" + port)
 	logging.LOGGER.Info(fmt.Sprintf("Starting web service on port %s", port))

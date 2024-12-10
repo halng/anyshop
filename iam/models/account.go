@@ -26,6 +26,7 @@ type Account struct {
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	RoleId    string    `json:"roleId"`
+	Status    string    `json:"status"`
 	CreateAt  int64     `json:"createAt"`
 	UpdateAt  int64     `json:"updateAt"`
 	CreateBy  string    `json:"createBy"`
@@ -105,7 +106,7 @@ func (account *Account) GetSerializedMessageForActiveNewUser() string {
 
 	// build activation link for new user
 	apiHost := os.Getenv("API_GATEWAY_HOST")
-	activeNewUser.ActivationLink = fmt.Sprintf("%s/api/v1/iam/activate?token=%s", apiHost, activeNewUser.Token)
+	activeNewUser.ActivationLink = fmt.Sprintf("%s/api/v1/iam/activate?username=%s&token=%s", apiHost, activeNewUser.Username ,activeNewUser.Token)
 
 	var activeNewUserMsg dto.ActiveNewUserMsg
 	activeNewUserMsg.Action = constants.ActiveNewUserAction
