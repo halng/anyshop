@@ -2,6 +2,10 @@
 
 set -e
 
+################################################################################################################################
+## HELPER FUNC
+################################################################################################################################
+
 # Detect changed folders
 detect_changed_folders() {\
     current_branch=$(git rev-parse --abbrev-ref HEAD)
@@ -12,21 +16,6 @@ detect_changed_folders() {\
         echo "$(git diff --name-only origin/main | awk -F'/' '{print $1}' | sort -u)"
     fi
     
-}
-
-install_sonar_cloud() {
-    curl -O https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
-    unzip *.zip
-    export PATH=$PATH:"${GITHUB_WORKSPACE}/sonar-scanner-6.2.1.4610-linux-x64/bin"
-    echo "Done: Download and Unzip Sonar Cloud"
-}
-
-install_golang_cli_lint() {
-  go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
-}
-
-install_poetry() {
-   curl -sSL https://install.python-poetry.org | python3 -
 }
 
 # Detect language based on folder contents
@@ -44,6 +33,47 @@ detect_language() {
         echo "unknown"
     fi
 }
+
+################################################################################################################################
+## INSTALL DEPENDENCIES 
+################################################################################################################################
+
+install_sonar_cloud() {
+    echo "Installing Sonar Cloud..."
+    curl -O https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
+    unzip *.zip
+    export PATH=$PATH:"${GITHUB_WORKSPACE}/sonar-scanner-6.2.1.4610-linux-x64/bin"
+    echo "Done: Download and Unzip Sonar Cloud"
+}
+
+install_golang_cli_lint() {
+    echo "Installing Golang-cli..."
+    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.61.0
+}
+
+install_poetry() {
+    echo "Installing Poetry..."
+    curl -sSL https://install.python-poetry.org | python3 -
+}
+
+install_pmd(){
+    echo "Installing PMD..."
+    cd $HOME
+    wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.8.0/pmd-dist-7.8.0-bin.zip
+    unzip pmd-dist-7.8.0-bin.zip
+    alias pmd="$HOME/pmd-bin-7.8.0/bin/pmd"
+}
+
+echo "Starting install dependencies..."
+install_sonar_cloud
+install_golang_cli_lint
+install_poetry
+install_pmd
+
+
+################################################################################################################################
+################################################################################################################################
+
 
 # Main CI process
 run_ci() {
@@ -113,12 +143,6 @@ fi
 
 echo "Detected changed folders: $CHANGED_FOLDERS"
 
-echo "Starting install dependencies..."
-
-install_sonar_cloud
-install_golang_cli_lint
-install_poetry
-
 echo "Starting verify components..."
 for folder in $CHANGED_FOLDERS; do
     if [[ ! -d "$folder" ]]; then
@@ -126,7 +150,8 @@ for folder in $CHANGED_FOLDERS; do
         continue
     fi
 
-    if [[ "$folder" == ".github" || "$folder" == "shop" || "$folder" == "cms" || "$folder" == "script" ]]; then
+    # Temporary exclude cms folder
+    if [[ "$folder" == ".github" || "$folder" == "shop" || "$folder" == "cms" || "$folder" == "script" || "$folder" == ".vscode" ]]; then
         continue
     fi
     

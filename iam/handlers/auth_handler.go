@@ -23,7 +23,7 @@ func CreateStaff(c *gin.Context) {
 	var userInput dto.RegisterRequest
 
 	// check if requester is super admin
-	requesterRole, _ := c.Get(constants.ApiUserRoles)
+	requesterRole, _ := c.Get(constants.ApiUserRole)
 	requesterId := c.GetHeader(constants.ApiUserIdRequestHeader)
 	if requesterRole != models.RoleSuperAdmin {
 		ResponseErrorHandler(c, http.StatusForbidden, constants.InvalidPermission, nil)
@@ -138,11 +138,11 @@ func Validate(c *gin.Context) {
 		ResponseErrorHandler(c, http.StatusInternalServerError, constants.InternalServerError, apiToken)
 		return
 	}
-	ResponseSuccessHandler(c, http.StatusOK, nil)
-	c.Header(constants.ApiUserIdRequestHeader, userId)
-	c.Header(constants.ApiUserRoles, role)
-	c.Header(constants.ApiUserRequestHeader, username)
-
+	c.JSON(200, gin.H{
+		"username": username,
+		"role":     role,
+		"userId":   userId,
+	})
 }
 
 func Activate(c *gin.Context) {

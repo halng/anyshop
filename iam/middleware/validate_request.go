@@ -35,9 +35,9 @@ func ValidateRequest(c *gin.Context) {
 	}
 
 	c.Header(constants.ApiUserIdRequestHeader, userId)
-	c.Header(constants.ApiUserRoles, role)
+	c.Header(constants.ApiUserRole, role)
 	c.Header(constants.ApiUserRequestHeader, username)
 
-	c.Set(constants.ApiUserRoles, role)
+	c.Set(constants.ApiUserRole, role)
 	c.Next()
 }

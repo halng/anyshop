@@ -28,7 +28,7 @@ const (
 	ApiTokenRequestHeader  = "X-API-SECRET-TOKEN"
 	ApiUserIdRequestHeader = "X-API-USER-ID"
 	ApiUserRequestHeader   = "X-API-USER"
-	ApiUserRoles           = "X-API-USER-ROLES"
+	ApiUserRole            = "X-API-USER-ROLE"
 
 	ActiveNewUserAction = "ACTIVATE_NEW_STAFF"
 

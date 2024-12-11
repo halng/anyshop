@@ -1,10 +1,10 @@
 server:
-  port: 9090
+  port: 9000
   address: 0.0.0.0
 
 host:
-  iam: http://localhost:9091
-  product: http://localhost:9094
+  iam: http://localhost:9001
+  cms: http://localhost:9002
   media: http://localhost:9095
   inventory: http://localhost:9096
 

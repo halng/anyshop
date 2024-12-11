@@ -37,6 +37,10 @@ public class AuthFilterConfig extends AbstractGatewayFilterFactory<AuthFilterCon
 
   private static final Logger LOG = LoggerFactory.getLogger(AuthFilterConfig.class);
   private static final String IAM_SERVICE = "iam";
+  private static final String X_API_SECRET_TOKEN_KEY = "X-API-SECRET-TOKEN";
+  private static final String X_API_USER_ID = "X-API-USER-ID";
+  private static final String X_API_USER = "X-API-USER";
+  private static final String X_API_USER_ROLE = "X-API-USER-ROLE";
   private final WebClient.Builder webClientBuilder;
 
   @Autowired private ObjectMapper objectMapper;
@@ -77,10 +81,10 @@ public class AuthFilterConfig extends AbstractGatewayFilterFactory<AuthFilterCon
 
       // TODO: change get token from header instead of `authorization`
       if (ExcludeUrlConfig.isSecure(path, method)) {
-        String bearerToken =
-            Objects.requireNonNull(request.getHeaders().get("authorization")).get(0);
-
-        if (bearerToken == null) {
+        String secretToken =
+            Objects.requireNonNull(request.getHeaders().get(X_API_SECRET_TOKEN_KEY)).get(0);
+        String userId = Objects.requireNonNull(request.getHeaders().get(X_API_USER_ID)).get(0);
+        if (secretToken == null || userId == null) {
           LOG.error("Can not access to secure end point with null token");
           return onError(
               exchange,
@@ -92,17 +96,25 @@ public class AuthFilterConfig extends AbstractGatewayFilterFactory<AuthFilterCon
             .build()
             .get()
             .uri(validateUrl)
-            .header("Authorization", bearerToken)
+            .header(X_API_SECRET_TOKEN_KEY, secretToken)
+            .header(X_API_USER_ID, userId)
             .retrieve()
             .bodyToMono(AuthValidateVm.class)
             .map(
                 res -> {
-                  exchange.getRequest().mutate().header("username", res.username());
-                  exchange.getRequest().mutate().header("authority", res.authority());
+                  ServerHttpRequest mutatedRequest =
+                      exchange
+                          .getRequest()
+                          .mutate()
+                          .header(X_API_USER, res.username())
+                          .header(X_API_USER_ROLE, res.role())
+                          .header(X_API_USER_ID, res.userId())
+                          .build();
                   LOG.info(
                       "Success validate user. Forward to %s"
                           .formatted(exchange.getRequest().getPath()));
-                  return exchange;
+
+                  return exchange.mutate().request(mutatedRequest).build();
                 })
             .flatMap(chain::filter)
             .onErrorResume(

@@ -270,7 +270,7 @@ func TestValidate(t *testing.T) {
 		assert.Equal(t, code, http.StatusOK)
 		assert.Equal(t, res, `{"code":200,"data":null,"status":"SUCCESS"}`)
 
-		assert.Equal(t, "super_admin", resHeaders.Get(constants.ApiUserRoles))
+		assert.Equal(t, "super_admin", resHeaders.Get(constants.ApiUserRole))
 		assert.Equal(t, "changeme", resHeaders.Get(constants.ApiUserRequestHeader))
 		assert.Equal(t, authData["id"].(string), resHeaders.Get(constants.ApiUserIdRequestHeader))
 
