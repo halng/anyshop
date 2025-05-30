@@ -23,15 +23,18 @@ const (
 	MissingParams              = "Missing required parameters. Please check your input"
 	ForbiddenMissingPermission = "You do not have permission to perform this action"
 	// account constant
-	AccountCreated    = "Account created successfully"
-	AccountNotFound   = "Account not found"
-	AccountUpdated    = "Account updated successfully"
-	AccountDeleted    = "Account deleted successfully"
-	DefaultCreator    = "SYSTEM"
-	AccountExists     = "Account with username: %s or email: %s already exists"
-	PasswordNotMatch  = "Invalid credentials"
-	InvalidPermission = "User does not have permission to access this resource"
-	DefaultPassword   = "12345678"
+	AccountCreated       = "Account created successfully"
+	AccountNotFound      = "Account not found"
+	AccountUpdated       = "Account updated successfully"
+	AccountDeleted       = "Account deleted successfully"
+	DefaultCreator       = "SYSTEM"
+	AccountExists        = "Account with username: %s or email: %s already exists"
+	PasswordDoesNotMatch = "Invalid credentials"
+	InvalidPermission    = "User does not have permission to access this resource"
+	DefaultPassword      = "12345678"
+	AccountInactive      = "Account is inactive. Please check your email to activate your account"
+	InvalidToken         = "Invalid token. Please check your activation link or token"
+	AccountActivated     = "Account activated successfully"
 	// define key
 	ApiTokenRequestHeader  = "X-API-SECRET-TOKEN"
 	ApiUserIdRequestHeader = "X-API-USER-ID"
@@ -47,3 +50,6 @@ const (
 
 	REDIS_PENDING_ACTIVE_STAFF_KEY = "pending_active_user_%s"
 )
+
+// ROLES defines the available roles in the system
+var ROLES = []string{"ADMIN", "MANAGER", "STAFF"}

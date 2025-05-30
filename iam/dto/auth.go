@@ -9,17 +9,16 @@
 package dto
 
 type RegisterRequest struct {
-	Username  string `json:"username" validate:"required"`
-	Email     string `json:"email" validate:"required,email"`
-	FirstName string `json:"firstname" validate:"required"`
-	LastName  string `json:"lastname" validate:"required"`
-	Password  string `json:"password"`
-	Role      string `json:"role"`
+	Username       string `json:"username" validate:"required"`
+	Email          string `json:"email" validate:"required,email"`
+	Password       string `json:"password" validate:"required,min=6"`
+	RepeatPassword string `json:"repeat_password" validate:"required,eqfield=Password"`
 }
 
 type LoginRequest struct {
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"password" validate:"required"`
+	Email    string `json:"email"`
 }
 
 type LoginResponse struct {

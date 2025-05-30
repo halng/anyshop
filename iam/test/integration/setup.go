@@ -51,6 +51,15 @@ func ServeRequestWithHeader(router *gin.Engine, method string, path string, body
 	return w.Code, string(res), w.Header()
 }
 
+func ServeRequestWithoutBody(router *gin.Engine, method string, path string) (int, string) {
+	req, _ := http.NewRequest(method, path, nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	res, _ := io.ReadAll(w.Body)
+	return w.Code, string(res)
+}
+
 var (
 	PostgresContainer testcontainers.Container
 	RedisContainer    testcontainers.Container
@@ -204,6 +213,7 @@ func SetupTestServer() {
 	os.Setenv("MASTER_EMAIL", "changeme@gmail.com")
 	os.Setenv("MASTER_FIRST_NAME", "changeme")
 	os.Setenv("MASTER_LAST_NAME", "changeme")
+	os.Setenv("IS_CLEAN_DB", "1")
 
 	err := kafka2.InitializeKafkaProducer(kafkaBootStrapServer)
 	if err != nil {

@@ -9,26 +9,12 @@ package utils
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"reflect"
 	"strconv"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
-
-// ParseAndValidateInput function to parse json data from request to stype and validate input data
-func ParseAndValidateInput(c *gin.Context, input interface{}) (interface{}, error) {
-	if err := c.ShouldBindJSON(&input); err != nil {
-		return input, err
-	}
-
-	if ok, errors := ValidateInput(input); !ok {
-		return input, errors
-	}
-
-	return input, nil
-}
 
 func ValidateInput(dataSet any) (bool, error) {
 	var validate = validator.New()

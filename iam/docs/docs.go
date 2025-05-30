@@ -12,9 +12,44 @@ const docTemplate = `{
         "contact": {},
         "version": "{{.Version}}"
     },
-    "host": "{{.Host}}",	
+    "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/activate": {
+            "post": {
+                "description": "Activate a user account by giving token and expired time",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Activate user account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Verify user credentials and return uuid pair with token saved in redis",
@@ -132,6 +167,9 @@ const docTemplate = `{
         "dto.LoginRequest": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },
@@ -161,24 +199,19 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "firstname",
-                "lastname",
+                "password",
+                "repeat_password",
                 "username"
             ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
-                "firstname": {
-                    "type": "string"
-                },
-                "lastname": {
-                    "type": "string"
-                },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 6
                 },
-                "role": {
+                "repeat_password": {
                     "type": "string"
                 },
                 "username": {

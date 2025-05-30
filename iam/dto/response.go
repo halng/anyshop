@@ -51,7 +51,7 @@ func ErrorResponse(c *gin.Context, statusCode int, message string, details inter
 		Details: details,
 	})
 
-	c.Abort()
+	//c.Abort()
 }
 
 func ForbiddenResponse(c *gin.Context, message string, traceData any) {

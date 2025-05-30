@@ -11,6 +11,8 @@ definitions:
     type: object
   dto.LoginRequest:
     properties:
+      email:
+        type: string
       password:
         type: string
       username:
@@ -31,25 +33,45 @@ definitions:
     properties:
       email:
         type: string
-      firstname:
-        type: string
-      lastname:
-        type: string
       password:
+        minLength: 6
         type: string
-      role:
+      repeat_password:
         type: string
       username:
         type: string
     required:
     - email
-    - firstname
-    - lastname
+    - password
+    - repeat_password
     - username
     type: object
 info:
   contact: {}
 paths:
+  /activate:
+    post:
+      consumes:
+      - application/json
+      description: Activate a user account by giving token and expired time
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Activate user account
+      tags:
+      - auth
   /login:
     post:
       consumes:

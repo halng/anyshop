@@ -42,3 +42,17 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	services.Login(c)
 }
+
+// Activate a user account by giving token and expired time
+// @Summary Activate user account
+// @Description Activate a user account by giving token and expired time
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} dto.APIResponse
+// @Failure 400 {object} dto.APIResponse
+// @Failure 500 {object} dto.APIResponse
+// @Router /activate [post]
+func Activate(context *gin.Context) {
+	services.Activate(context)
+}
