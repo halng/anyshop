@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -173,6 +174,21 @@ func SetupContainers() {
 	}
 	//KafkaContainer.Start(ctx)
 
+}
+
+func GetRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, length)
+	for i := range result {
+		// Use a random index to select a character from the charset
+		index := rand.Intn(len(charset))
+		result[i] = charset[index]
+	}
+	return string(result)
+}
+
+func GetRandomEmail() string {
+	return fmt.Sprintf("%s@%s.com", GetRandomString(10), GetRandomString(5))
 }
 
 func TearDownContainers() {

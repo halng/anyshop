@@ -21,11 +21,9 @@ func TestGenerateJWT(t *testing.T) {
 	t.Run("Create and extract JWT", func(t *testing.T) {
 		username := "changeme"
 		id := "XXX-YYY-ZZZ"
-		roles := []string{"super_admin"}
-		permissions := []string{"read", "write"}
 
 		// Test JWT
-		token, err := GenerateJWT(id, username, roles, permissions)
+		token, err := GenerateJWT(id, username, nil)
 		if err != nil {
 			t.Errorf("Error generating JWT: %v", err)
 		}
@@ -33,7 +31,7 @@ func TestGenerateJWT(t *testing.T) {
 		if token == "" {
 			t.Errorf("Token is empty")
 		}
-		
+
 		assert.True(t, len(token) > 0)
 	})
 }

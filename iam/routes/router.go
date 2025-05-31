@@ -14,7 +14,6 @@ import (
 	"github.com/halng/anyshop/constants"
 	"github.com/halng/anyshop/docs"
 	"github.com/halng/anyshop/handlers"
-	"github.com/halng/anyshop/middleware"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -29,8 +28,6 @@ func Routes() *gin.Engine {
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", constants.ApiTokenRequestHeader, constants.ApiUserIdRequestHeader},
 		AllowCredentials: true,
 	}))
-
-	router.Use(middleware.ErrorHandler())
 
 	// auth routes
 	authGroup := router.Group("/api/v1/auth")

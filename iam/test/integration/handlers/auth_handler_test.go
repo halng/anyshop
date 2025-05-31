@@ -8,6 +8,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/halng/anyshop/constants"
 	"github.com/halng/anyshop/db"
@@ -124,15 +125,17 @@ func TestLoginHandler(t *testing.T) {
 		assert.Contains(t, res, constants.AccountNotFound)
 	})
 	t.Run("Login: when account exist and not activate yet", func(t *testing.T) {
+		email := integration.GetRandomEmail()
+		tempS := integration.GetRandomString(10)
 		db.DB.Postgres.Save(&models.User{
 			ID:       uuid.New(),
-			Email:    "changeme@gmail.com",
-			Username: "changeme",
-			Password: "changeme",
+			Email:    email,
+			Username: tempS,
+			Password: tempS,
 			Status:   constants.ACCOUNT_STATUS_INACTIVE,
 		})
 
-		jsonLoginRequest := `{"password": "changeme", "username": "changeme"}`
+		jsonLoginRequest := fmt.Sprintf(`{"password": "%s", "username": "%s"}`, tempS, tempS)
 		code, res := integration.ServeRequest(router, "POST", urlPathLogin, jsonLoginRequest)
 		assert.Equal(t, code, http.StatusUnauthorized)
 		assert.Contains(t, res, constants.AccountInactive)
@@ -178,16 +181,20 @@ func TestActivateHandler(t *testing.T) {
 
 	router.POST(url, handlers2.Activate)
 
-	err := db.SaveDataToCache("pending_active_user_hellothere", "to-ke-n")
+	mockUsername := integration.GetRandomString(6)
+	mockPass := integration.GetRandomString(10)
+	mockEmail := integration.GetRandomEmail()
+
+	err := db.SaveDataToCache(fmt.Sprintf("pending_active_user_%s", mockUsername), "to-ke-n")
 	if err != nil {
 		return
 	}
 
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("hellothere"), bcrypt.DefaultCost)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(mockPass), bcrypt.DefaultCost)
 	db.DB.Postgres.Save(&models.User{
 		ID:       uuid.New(),
-		Email:    "hellothere@gmail.com",
-		Username: "hellothere",
+		Email:    mockEmail,
+		Username: mockUsername,
 		Password: string(hashedPassword),
 		Status:   constants.ACCOUNT_STATUS_INACTIVE,
 	})
@@ -209,7 +216,7 @@ func TestActivateHandler(t *testing.T) {
 	})
 
 	t.Run("Activate: when token is not match", func(t *testing.T) {
-		param := "?username=hellothere&token=not-match"
+		param := fmt.Sprintf("?username=%s&token=not-match", mockUsername)
 		code, res := integration.ServeRequestWithoutBody(router, "POST", url+param)
 
 		assert.Equal(t, code, http.StatusForbidden)
@@ -217,23 +224,22 @@ func TestActivateHandler(t *testing.T) {
 	})
 
 	t.Run("Activate: when key exists and token is match", func(t *testing.T) {
-		param := "?username=hellothere&token=to-ke-n"
+		param := fmt.Sprintf("?username=%s&token=to-ke-n", mockUsername)
 		code, res := integration.ServeRequestWithoutBody(router, "POST", url+param)
+
 		assert.Equal(t, code, http.StatusOK)
 		assert.Contains(t, res, constants.AccountActivated)
 
 		// verify database
-		user, _ := models.GetUserByUsernameOrEmail("hellothere", "")
+		user, _ := models.GetUserByUsernameOrEmail(mockUsername, "")
 		assert.NotNil(t, user)
 
 		assert.Equal(t, user.Status, constants.ACCOUNT_STATUS_ACTIVE)
 
 		// verify cache
-		activeToken, err := db.GetDataFromCache("pending_active_user_hellothere")
-		if err != nil {
-			t.Errorf("Error getting data from cache: %v", err)
-		}
-		assert.Nil(t, activeToken)
+		activeToken, err := db.GetDataFromCache(fmt.Sprintf("pending_active_user_%s", mockUsername))
+		assert.Equal(t, activeToken, "")
+		assert.NotNil(t, err)
 	})
 
 }

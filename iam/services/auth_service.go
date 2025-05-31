@@ -116,13 +116,9 @@ func Activate(c *gin.Context) {
 
 	key := fmt.Sprintf(constants.REDIS_PENDING_ACTIVE_STAFF_KEY, username)
 	activeToken, err := db.GetDataFromCache(key)
-	if err != nil {
-		dto.InternalServerErrorResponse(c, constants.InternalServerError, err)
-		return
-	}
 
-	if activeToken == nil || activeToken == "" {
-		dto.NotFoundResponse(c, constants.TokenNotFount, nil)
+	if activeToken == nil || activeToken == "" || err != nil {
+		dto.NotFoundResponse(c, constants.TokenNotFount, err)
 		return
 	}
 
