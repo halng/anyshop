@@ -35,19 +35,6 @@ func Routes() *gin.Engine {
 	authGroup.POST("/register", handlers.Register)
 	authGroup.POST("/activate", handlers.Activate)
 
-	//userGroup := router.Group("/api/v1/user")
-	//// user routes
-	//userGroup.POST("/login", handlers.Login)
-	//userGroup.POST("/create-staff", middleware.ValidateRequest, handlers.CreateStaff)
-	//userGroup.POST("/register", handlers.Register)
-	//userGroup.GET("/validate", handlers.Validate)
-	//userGroup.POST("/activate", handlers.Activate)
-	//
-	//// shop routes
-	//shopGroup := router.Group("/api/v1/shop")
-	//shopGroup.POST("", middleware.ValidateRequest, handlers.CreateShop)
-	//shopGroup.PUT("", middleware.ValidateRequest, handlers.UpdateShop)
-
 	// swagger
 	docs.SwaggerInfo.BasePath = "/api/v1/auth"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
