@@ -1,4 +1,140 @@
+definitions:
+  dto.APIResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      details: {}
+      error: {}
+      status:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.LoginResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      token:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      repeat_password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - repeat_password
+    - username
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /activate:
+    post:
+      consumes:
+      - application/json
+      description: Activate a user account by giving token and expired time
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Activate user account
+      tags:
+      - auth
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Verify user credentials and return uuid pair with token saved in
+        redis
+      parameters:
+      - description: Login Request
+        in: body
+        name: loginRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Login user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided details
+      parameters:
+      - description: Register Request
+        in: body
+        name: registerRequest
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.APIResponse'
+      summary: Register a new user
+      tags:
+      - auth
 swagger: "2.0"

@@ -16,7 +16,7 @@ var (
 	DefaultCacheExpireTime = 1
 )
 
-func GetDataFromKey(key string) (interface{}, error) {
+func GetDataFromCache(key string) (interface{}, error) {
 	ctx := context.Background()
 
 	redisClient := DB.Redis
@@ -31,5 +31,13 @@ func SaveDataToCache(key string, data interface{}) error {
 
 	redisClient := DB.Redis
 	err := redisClient.Set(ctx, key, data, time.Duration(DefaultCacheExpireTime)*time.Hour).Err()
+	return err
+}
+
+func DeleteDataFromCache(key string) error {
+	ctx := context.Background()
+
+	redisClient := DB.Redis
+	err := redisClient.Del(ctx, key).Err()
 	return err
 }

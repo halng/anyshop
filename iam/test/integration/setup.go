@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -49,6 +50,15 @@ func ServeRequestWithHeader(router *gin.Engine, method string, path string, body
 	router.ServeHTTP(w, req)
 	res, _ := io.ReadAll(w.Body)
 	return w.Code, string(res), w.Header()
+}
+
+func ServeRequestWithoutBody(router *gin.Engine, method string, path string) (int, string) {
+	req, _ := http.NewRequest(method, path, nil)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	res, _ := io.ReadAll(w.Body)
+	return w.Code, string(res)
 }
 
 var (
@@ -166,6 +176,21 @@ func SetupContainers() {
 
 }
 
+func GetRandomString(length int) string {
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, length)
+	for i := range result {
+		// Use a random index to select a character from the charset
+		index := rand.Intn(len(charset))
+		result[i] = charset[index]
+	}
+	return string(result)
+}
+
+func GetRandomEmail() string {
+	return fmt.Sprintf("%s@%s.com", GetRandomString(10), GetRandomString(5))
+}
+
 func TearDownContainers() {
 	containers := []testcontainers.Container{
 		PostgresContainer,
@@ -204,6 +229,7 @@ func SetupTestServer() {
 	os.Setenv("MASTER_EMAIL", "changeme@gmail.com")
 	os.Setenv("MASTER_FIRST_NAME", "changeme")
 	os.Setenv("MASTER_LAST_NAME", "changeme")
+	os.Setenv("IS_CLEAN_DB", "1")
 
 	err := kafka2.InitializeKafkaProducer(kafkaBootStrapServer)
 	if err != nil {

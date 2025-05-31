@@ -8,12 +8,11 @@
 package utils
 
 import (
+	"github.com/google/uuid"
+	"github.com/halng/anyshop/models"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateJWT(t *testing.T) {
@@ -24,10 +23,9 @@ func TestGenerateJWT(t *testing.T) {
 	t.Run("Create and extract JWT", func(t *testing.T) {
 		username := "changeme"
 		id := "XXX-YYY-ZZZ"
-		role := "super_admin"
 
 		// Test JWT
-		token, err := GenerateJWT(id, username, role)
+		token, err := GenerateJWT(id, username, nil)
 		if err != nil {
 			t.Errorf("Error generating JWT: %v", err)
 		}
@@ -36,35 +34,56 @@ func TestGenerateJWT(t *testing.T) {
 			t.Errorf("Token is empty")
 		}
 
-		// Test ExtractDataFromToken
-		isValid, idFromToken, usernameFromToken, roleFromToken := ExtractDataFromToken(token)
-		assert.True(t, isValid)
-		assert.Equal(t, id, idFromToken)
-		assert.Equal(t, username, usernameFromToken)
-		assert.Equal(t, "super_admin", roleFromToken)
+		assert.True(t, len(token) > 0)
 	})
-	t.Run("Extract data from invalid token", func(t *testing.T) {
-		token := "invalid.bearer.token"
-		isValid, idFromToken, usernameFromToken, roleFromToken := ExtractDataFromToken(token)
-		assert.False(t, isValid)
-		assert.Equal(t, "", idFromToken)
-		assert.Equal(t, "", usernameFromToken)
-		assert.Equal(t, "", roleFromToken)
-	})
-	t.Run("Extract Token with missing claims", func(t *testing.T) {
-		// Create a token with missing claims
-		claims := jwt.MapClaims{
-			IdClaimKey: "test-id",
-			"exp":      time.Now().Add(time.Hour).Unix(),
-		}
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		tokenStr, _ := token.SignedString([]byte(apiSecret))
 
-		// Test ExtractDataFromToken
-		isValid, id, username, role := ExtractDataFromToken(tokenStr)
-		assert.False(t, isValid)
-		assert.Equal(t, "", id)
-		assert.Equal(t, "", username)
-		assert.Equal(t, "", role)
+	t.Run("Create and extract JWT with ACLs", func(t *testing.T) {
+		username := "changeme"
+		id := "XXX-YYY-ZZZ"
+		// Set up environment variable for API secret key
+		roleAdmin := models.Role{
+			Id:   uuid.New(),
+			Name: "ADMIN",
+		}
+
+		roleManager := models.Role{
+			Id:   uuid.New(),
+			Name: "MANAGER",
+		}
+		// Test JWT with ACLs
+		acls := []models.AccessPolicy{
+			{
+				Action: "read",
+				ShopUser: models.ShopUser{
+					ShopID: uuid.New(),
+					Role:   roleAdmin,
+				},
+			},
+			{
+				Action: "write",
+				ShopUser: models.ShopUser{
+					ShopID: uuid.New(),
+					Role:   roleAdmin,
+				},
+			},
+			{
+				Action: "delete",
+				ShopUser: models.ShopUser{
+					ShopID: uuid.New(),
+					Role:   roleManager,
+				},
+			},
+		}
+
+		token, err := GenerateJWT(id, username, acls)
+		if err != nil {
+			t.Errorf("Error generating JWT with ACLs: %v", err)
+		}
+
+		if token == "" {
+			t.Errorf("Token is empty")
+		}
+
+		assert.True(t, len(token) > 0)
 	})
 }

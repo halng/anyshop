@@ -8,6 +8,7 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,7 +16,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ValidateInput(dataSet any) (bool, map[string]string) {
+func ValidateInput(dataSet any) (bool, error) {
 	var validate = validator.New()
 
 	err := validate.Struct(dataSet)
@@ -53,7 +54,7 @@ func ValidateInput(dataSet any) (bool, map[string]string) {
 			errors[idxStr] = msg
 			countError++
 		}
-		return false, errors
+		return false, fmt.Errorf("invalid input data: %v", errors)
 	}
 	return true, nil
 }

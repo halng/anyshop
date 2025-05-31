@@ -8,6 +8,7 @@
 package utils
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -43,7 +44,7 @@ func TestValidateInputTest(t *testing.T) {
 		}
 		valid, errors := ValidateInput(input)
 		assert.False(t, valid)
-		assert.Equal(t, "The username field is required", errors["0"])
+		assert.True(t, strings.Contains(errors.Error(), "The username field is required"))
 	})
 
 	t.Run("Invalid email format", func(t *testing.T) {
@@ -54,7 +55,7 @@ func TestValidateInputTest(t *testing.T) {
 		}
 		valid, errors := ValidateInput(input)
 		assert.False(t, valid)
-		assert.Equal(t, "The email field must be a valid email address", errors["0"])
+		assert.True(t, strings.Contains(errors.Error(), "The email field must be a valid email address"))
 	})
 
 	t.Run("Field value less than minimum", func(t *testing.T) {
@@ -65,7 +66,7 @@ func TestValidateInputTest(t *testing.T) {
 		}
 		valid, errors := ValidateInput(input)
 		assert.False(t, valid)
-		assert.Equal(t, "The age field must be greater than or equal to 18", errors["0"])
+		assert.True(t, strings.Contains(errors.Error(), "The age field must be greater than or equal to 18"))
 	})
 
 	t.Run("Field value greater than maximum", func(t *testing.T) {
@@ -76,7 +77,7 @@ func TestValidateInputTest(t *testing.T) {
 		}
 		valid, errors := ValidateInput(input)
 		assert.False(t, valid)
-		assert.Equal(t, "The age field must be less than or equal to 65", errors["0"])
+		assert.True(t, strings.Contains(errors.Error(), "The age field must be less than or equal to 65"))
 	})
 
 	t.Run("Missing multiple required fields", func(t *testing.T) {
@@ -87,7 +88,7 @@ func TestValidateInputTest(t *testing.T) {
 		}
 		valid, errors := ValidateInput(input)
 		assert.False(t, valid)
-		assert.Equal(t, "The email field is required", errors["0"])
-		assert.Equal(t, "The username field is required", errors["1"])
+		assert.True(t, strings.Contains(errors.Error(), "The email field is required"))
+		assert.True(t, strings.Contains(errors.Error(), "The username field is required"))
 	})
 }
