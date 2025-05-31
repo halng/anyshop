@@ -13,6 +13,7 @@ import (
 	"github.com/halng/anyshop/logging"
 	"go.uber.org/zap"
 	"net/http"
+	"strings"
 )
 
 type APIResponse struct {
@@ -38,7 +39,7 @@ func ErrorResponse(c *gin.Context, statusCode int, message string, details inter
 		zap.String("endpoint", c.Request.RequestURI),
 		zap.String("method", c.Request.Method),
 		zap.String("remote_address", c.Request.RemoteAddr),
-		zap.Any("header", c.Request.Header),
+		zap.Any("header", sanitizeHeaders(c.Request.Header)),
 		zap.Any("error", details),
 		zap.Int("status_code", statusCode),
 		zap.String("message", message),
@@ -72,4 +73,17 @@ func InternalServerErrorResponse(c *gin.Context, message string, traceData any) 
 
 func NotFoundResponse(c *gin.Context, message string, traceData any) {
 	ErrorResponse(c, http.StatusNotFound, message, traceData)
+}
+
+// sanitizeHeaders filters or masks sensitive information in HTTP headers
+func sanitizeHeaders(headers http.Header) map[string]string {
+	sanitized := make(map[string]string)
+	for key, values := range headers {
+		if strings.ToLower(key) == "authorization" || strings.ToLower(key) == "cookie" {
+			sanitized[key] = "[REDACTED]"
+		} else {
+			sanitized[key] = strings.Join(values, ", ")
+		}
+	}
+	return sanitized
 }
