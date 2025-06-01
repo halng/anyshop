@@ -31,7 +31,7 @@ import { iconSubset } from './icons/icon-subset';
 })
 export class AppComponent implements OnInit {
   tabTitle = 'Any Shop';
-  title = 'Welcome to Any Shop';
+  title = 'Welcome to ANYSHOP';
 
   readonly #destroyRef: DestroyRef = inject(DestroyRef);
   readonly #activatedRoute: ActivatedRoute = inject(ActivatedRoute);

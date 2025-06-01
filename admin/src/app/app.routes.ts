@@ -13,6 +13,7 @@ import { LayoutComponent } from './pages/layout/layout.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  {path: "register", loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)},
   {
     path: 'home',
     component: LayoutComponent,
