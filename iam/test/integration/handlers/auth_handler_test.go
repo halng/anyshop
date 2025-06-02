@@ -38,7 +38,7 @@ func TestRegisterHandler(t *testing.T) {
 
 	t.Run("Register: when data is invalid to process", func(t *testing.T) {
 
-		invalidCases := `{"email": "change@gmail.com, "password": "12345678", "repeat_password": "12345678", "username": "hellothere" }`
+		invalidCases := `{"email": "change@gmail.com, "password": "12345678", "confirm_password": "12345678", "username": "hellothere" }`
 
 		code, res := integration.ServeRequest(router, "POST", path, invalidCases)
 		assert.Equal(t, code, http.StatusBadRequest)
@@ -48,15 +48,16 @@ func TestRegisterHandler(t *testing.T) {
 
 	t.Run("Register: when data not meet requirement", func(t *testing.T) {
 
-		invalidCases := `{"email": "changecom", "password": "123", "repeat_password": "12345678", "username": "hellothere" }`
+		invalidCases := `{"email": "changecom", "password": "123", "confirm_password": "12345678", "username": "hellothere" }`
 
 		code, res := integration.ServeRequest(router, "POST", path, invalidCases)
 		assert.Equal(t, code, http.StatusBadRequest)
-		assert.Contains(t, res, "invalid input data: map[0:The email field must be a valid email address 1:The password field is invalid 2:The repeat_password field must be equal to Password")
+		assert.Contains(t, res, "invalid input data: map[0:The email field must be a valid email address 1:The password field is invalid 2:The confirm_password field must be equal to Password")
 	})
 
 	t.Run("Register: when user is successfully registered", func(t *testing.T) {
-		validData := `{ "email": "changeme@gmail.com", "password": "hellul", "repeat_password": "hellul", "username": "hellothere" }`
+		mockPass := integration.GetRandomString(10)
+		validData := fmt.Sprintf(`{ "email": "changeme@gmail.com", "password": "%s", "confirm_password": "%s", "username": "hellothere" }`, mockPass, mockPass)
 		code, res := integration.ServeRequest(router, "POST", path, validData)
 
 		assert.Equal(t, code, http.StatusCreated)
@@ -77,11 +78,12 @@ func TestRegisterHandler(t *testing.T) {
 	})
 
 	t.Run("Register: when account already exists", func(t *testing.T) {
-		validData := `{ "email": "changeme@gmail.com", "password": "hellul", "repeat_password": "hellul", "username": "hellothere" }`
+		mockPass := integration.GetRandomString(10)
+		validData := fmt.Sprintf(`{ "email": "changeme@gmail.com", "password": "%s", "confirm_password": "%s", "username": "hellothere" }`, mockPass, mockPass)
 		code, res := integration.ServeRequest(router, "POST", path, validData)
 
 		assert.Equal(t, code, http.StatusBadRequest)
-		assert.Contains(t, res, constants.AccountExists)
+		assert.Contains(t, res, "Account with username: hellothere or email: changeme@gmail.com already exists")
 	})
 
 }

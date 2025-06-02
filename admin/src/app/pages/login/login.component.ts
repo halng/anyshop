@@ -82,13 +82,12 @@ export class LoginComponent {
             return;
           } else {
             this.toast.success('Login successfully. Redirecting...');
-            this.userService.setApiToken(data);
+            // this.userService.setApiToken(data);
             // redirect to home page
             this.router.navigate(['/home']);
           }
         },
         (err) => {
-          console.log(err);
           const error = err.error.error;
           this.toast.error(error);
         }

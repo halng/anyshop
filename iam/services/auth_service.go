@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
 	}
 
 	if models.ExistsByEmailOrUsername(userRegister.Email, userRegister.Username) {
-		dto.BadRequestResponse(c, constants.AccountExists, nil)
+		dto.BadRequestResponse(c, fmt.Sprintf(constants.AccountExists, userRegister.Username, userRegister.Email), nil)
 		return
 	}
 
@@ -200,8 +200,8 @@ func getMessageForActiveNewUser(user models.User) (string, string) {
 	activeNewUser.ExpiredTime = fmt.Sprintf("%d", expiredTime) // 1 day
 
 	// build activation link for new user
-	apiHost := os.Getenv("API_GATEWAY_HOST")
-	activeNewUser.ActivationLink = fmt.Sprintf("%s/api/v1/iam/activate?username=%s&token=%s", apiHost, activeNewUser.Username, activeNewUser.Token)
+	apiHost := os.Getenv("ADMIN_SITE_HOST")
+	activeNewUser.ActivationLink = fmt.Sprintf("%s/#/activate?username=%s&token=%s", apiHost, activeNewUser.Username, activeNewUser.Token)
 
 	var activeNewUserMsg dto.ActiveNewUserMsg
 	activeNewUserMsg.Action = constants.ActiveNewUserAction

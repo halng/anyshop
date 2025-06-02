@@ -42,7 +42,7 @@ def test_send_email_success(mock_ssl_context, mock_smtp_ssl, email_config_mock):
     # Verify the SMTP methods were called correctly
     mock_ssl_context.assert_called_once()
     smtp_instance.login.assert_called_once_with(
-        "changeme@gmail.com", "change me for time"
+        "changeme@gmail.com", "xxxn xxnx xnxx nxxx"
     )
     # Assert sendmail was called with the correct parameters
     args, _ = smtp_instance.sendmail.call_args

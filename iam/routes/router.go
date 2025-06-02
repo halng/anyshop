@@ -30,13 +30,13 @@ func Routes() *gin.Engine {
 	}))
 
 	// auth routes
-	authGroup := router.Group("/api/v1/auth")
+	authGroup := router.Group("/api/v1/iam")
 	authGroup.POST("/login", handlers.Login)
 	authGroup.POST("/register", handlers.Register)
 	authGroup.POST("/activate", handlers.Activate)
 
 	// swagger
-	docs.SwaggerInfo.BasePath = "/api/v1/auth"
+	docs.SwaggerInfo.BasePath = "/api/v1/iam"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return router

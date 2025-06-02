@@ -21,35 +21,55 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string) {
-    return this.http.post(`${this.BASE_URL}/login`, { username, password });
+    if (username.indexOf('@') > -1) {
+     return this.http.post(`${this.BASE_URL}/login`, { 'email': username, password });
+    }
+    else {
+      return this.http.post(`${this.BASE_URL}/login`, { username, password });
+    }
+    
+  }
+
+  register(username: string, email: string, password: string, confirmPassword: string) {
+    return this.http.post(`${this.BASE_URL}/register`, {
+      username,
+      email,
+      password,
+      'confirm_password': confirmPassword,
+    });
+  }
+
+  activate(username: string, token: string) {
+    return this.http.post(`${this.BASE_URL}/activate?username=${username}&token=${token}`, {});
   }
 
   setApiToken(jsonObject: any) {
     const expiredTime = new Date().getTime() + 3600000; // 1 hour
 
-    localStorage.setItem(this.authKey, JSON.stringify(jsonObject));
-    localStorage.setItem(this.authExpireKey, expiredTime.toString());
+
+    global.localStorage.setItem(this.authKey, JSON.stringify(jsonObject));
+    global.localStorage.setItem(this.authExpireKey, expiredTime.toString());
   }
 
   isLogin() {
     // check if need to refresh token
-    const expiredTime = localStorage.getItem(this.authExpireKey);
+    const expiredTime = global.localStorage.getItem(this.authExpireKey);
     if (expiredTime) {
       const expiredTimeInt = parseInt(expiredTime, 10);
       if (expiredTimeInt < new Date().getTime()) {
-        localStorage.removeItem(this.authKey);
-        localStorage.removeItem(this.authExpireKey);
+        global.localStorage.removeItem(this.authKey);
+        global.localStorage.removeItem(this.authExpireKey);
         return false;
       } else {
-        return !!localStorage.getItem(this.authKey);
+        return !!global.localStorage.getItem(this.authKey);
       }
     }
     return false;
   }
 
   logout() {
-    localStorage.removeItem(this.authKey);
-    localStorage.removeItem(this.authExpireKey);
+    global.localStorage.removeItem(this.authKey);
+    global.localStorage.removeItem(this.authExpireKey);
   }
 
   createStaff(data: UserCreate) {

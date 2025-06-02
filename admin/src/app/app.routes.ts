@@ -1,9 +1,9 @@
 /*
-* *****************************************************************************************
-* Copyright 2024 By ANYSHOP Project 
-* Licensed under the Apache License, Version 2.0;
-* *****************************************************************************************
-*/
+ * *****************************************************************************************
+ * Copyright 2024 By ANYSHOP Project
+ * Licensed under the Apache License, Version 2.0;
+ * *****************************************************************************************
+ */
 
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
@@ -13,6 +13,20 @@ import { LayoutComponent } from './pages/layout/layout.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
+  {
+    path: 'activate',
+    loadComponent: () =>
+      import('./pages/activate/activate.component').then(
+        (m) => m.ActivateComponent
+      ),
+  },
   {
     path: 'home',
     component: LayoutComponent,
