@@ -21,7 +21,13 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string) {
-    return this.http.post(`${this.BASE_URL}/login`, { username, password });
+    if (username.indexOf('@') > -1) {
+     return this.http.post(`${this.BASE_URL}/login`, { 'email': username, password });
+    }
+    else {
+      return this.http.post(`${this.BASE_URL}/login`, { username, password });
+    }
+    
   }
 
   register(username: string, email: string, password: string, confirmPassword: string) {
@@ -31,6 +37,10 @@ export class UserService {
       password,
       'confirm_password': confirmPassword,
     });
+  }
+
+  activate(username: string, token: string) {
+    return this.http.post(`${this.BASE_URL}/activate?username=${username}&token=${token}`, {});
   }
 
   setApiToken(jsonObject: any) {

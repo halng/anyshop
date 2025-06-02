@@ -56,7 +56,8 @@ func TestRegisterHandler(t *testing.T) {
 	})
 
 	t.Run("Register: when user is successfully registered", func(t *testing.T) {
-		validData := `{ "email": "changeme@gmail.com", "password": "hellul", "confirm_password": "hellul", "username": "hellothere" }`
+		mockPass := integration.GetRandomString(10)
+		validData := fmt.Sprintf(`{ "email": "changeme@gmail.com", "password": "%s", "confirm_password": "%s", "username": "hellothere" }`, mockPass, mockPass)
 		code, res := integration.ServeRequest(router, "POST", path, validData)
 
 		assert.Equal(t, code, http.StatusCreated)
@@ -77,11 +78,12 @@ func TestRegisterHandler(t *testing.T) {
 	})
 
 	t.Run("Register: when account already exists", func(t *testing.T) {
-		validData := `{ "email": "changeme@gmail.com", "password": "hellul", "confirm_password": "hellul", "username": "hellothere" }`
+		mockPass := integration.GetRandomString(10)
+		validData := fmt.Sprintf(`{ "email": "changeme@gmail.com", "password": "%s", "confirm_password": "%s", "username": "hellothere" }`, mockPass, mockPass)
 		code, res := integration.ServeRequest(router, "POST", path, validData)
 
 		assert.Equal(t, code, http.StatusBadRequest)
-		assert.Contains(t, res, constants.AccountExists)
+		assert.Contains(t, res, "Account with username: hellothere or email: changeme@gmail.com already exists")
 	})
 
 }

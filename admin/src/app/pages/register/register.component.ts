@@ -64,14 +64,15 @@ export class RegisterComponent {
     this.userService
       .register(this.username, this.email, this.password, this.confirmPassword)
       .subscribe({
-        next: (response: any) => {
+        next: () => {
           this.toast.success('Registration successful!');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/login']);
         },
         error: (error: any) => {
           console.error('Registration error:', error);
           if (error.status === 400) {
             this.toast.error('Registration failed. Please check your input.');
+            this.toast.error(error.error.error);
           }
         },
       });

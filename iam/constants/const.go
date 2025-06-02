@@ -18,7 +18,7 @@ const (
 	NotFound                   = "Not Found"
 	Conflict                   = "Conflict"
 	InternalServerError        = "There was an error processing your request. Please try again later"
-	TokenNotFount              = "Your login session has expired. Please login again"
+	TokenNotFount              = "Your activate token has expired or is invalid. Please log in again"
 	MissingCredentials         = "Missing credentials. X-API-SECRET-TOKEN and X-API-USER-ID are required"
 	MissingParams              = "Missing required parameters. Please check your input"
 	ForbiddenMissingPermission = "You do not have permission to perform this action"
