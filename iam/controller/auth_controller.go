@@ -5,7 +5,7 @@
 * *****************************************************************************************
  */
 
-package handlers
+package controller
 
 import (
 	"github.com/gin-gonic/gin"

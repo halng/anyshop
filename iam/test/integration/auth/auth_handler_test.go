@@ -5,7 +5,7 @@
 * *****************************************************************************************
  */
 
-package handlers
+package auth
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ import (
 	"os"
 	"testing"
 
-	handlers2 "github.com/halng/anyshop/handlers"
+	handlers2 "github.com/halng/anyshop/controller"
 	"github.com/halng/anyshop/test/integration"
 	"github.com/stretchr/testify/assert"
 )

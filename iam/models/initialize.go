@@ -13,6 +13,7 @@ import (
 	"github.com/halng/anyshop/db"
 	"github.com/halng/anyshop/logging"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 	"os"
 )
 
@@ -21,18 +22,18 @@ func Initialize() {
 	if isCleanUp == "1" {
 		logging.LOGGER.Info("Cleaning up database...")
 		cleanUp()
+
+		DB := db.DB
+		DB.Postgres.AutoMigrate(&User{})
+		DB.Postgres.AutoMigrate(&Shop{})
+		DB.Postgres.AutoMigrate(&Role{})
+		DB.Postgres.AutoMigrate(&ShopUser{})
+		//initMasterUser()
+		initRoles()
+		initTestUser()
 	} else {
 		logging.LOGGER.Info("Skipping database cleanup")
 	}
-
-	DB := db.DB
-	DB.Postgres.AutoMigrate(&User{})
-	DB.Postgres.AutoMigrate(&Shop{})
-	DB.Postgres.AutoMigrate(&Role{})
-	DB.Postgres.AutoMigrate(&ShopUser{})
-	DB.Postgres.AutoMigrate(&AccessPolicy{})
-	//initMasterUser()
-	initRoles()
 
 }
 
@@ -102,4 +103,30 @@ func initRoles() {
 	}
 
 	logging.LOGGER.Info("Roles initialized successfully")
+}
+
+func initTestUser() {
+	testUsername := os.Getenv("TEST_USERNAME")
+	testPassword := os.Getenv("TEST_PASSWORD")
+	testEmail := os.Getenv("TEST_EMAIL")
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(testPassword), bcrypt.DefaultCost)
+	if err != nil {
+		logging.LOGGER.Error("Cannot hash password", zap.Any("error", err))
+		panic("Cannot hash password")
+	}
+	testUser := User{
+		ID:       uuid.New(),
+		Username: testUsername,
+		Password: string(hashedPassword),
+		Email:    testEmail,
+		Status:   constants.ACCOUNT_STATUS_ACTIVE,
+	}
+
+	if _, err = testUser.SaveUser(); err != nil {
+		logging.LOGGER.Error("Cannot create test user", zap.Any("error", err))
+		panic("Cannot create test user")
+	}
+
+	logging.LOGGER.Info("Test user created successfully")
 }
