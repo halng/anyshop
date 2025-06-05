@@ -22,6 +22,20 @@ export const navItems: INavData[] = [
    */
   {
     title: true,
+    name: "Home"
+  },
+  {
+    name: "Home",
+    url: "home/view",
+    iconComponent: { name: 'cil-home' }
+  },
+  {
+    name: "My Tasks",
+    url: "home/my-tasks",
+    iconComponent: { name: 'cil-task' }
+  },
+  {
+    title: true,
     name: "Staff Management"
   },
   {

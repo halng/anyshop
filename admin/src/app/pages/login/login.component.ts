@@ -81,9 +81,13 @@ export class LoginComponent {
             );
             return;
           } else {
+            
+            // set api token to local storage
+            localStorage.setItem(
+              this.userService.authKey,
+              JSON.stringify(data)
+            );
             this.toast.success('Login successfully. Redirecting...');
-            // this.userService.setApiToken(data);
-            // redirect to home page
             this.router.navigate(['/home']);
           }
         },

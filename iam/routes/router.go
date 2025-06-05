@@ -36,8 +36,8 @@ func Routes() *gin.Engine {
 	authGroup.POST("/activate", controller.Activate)
 
 	// shop routes
-	shopGroup := router.Group("/api/v1/iam/shop")
-	shopGroup.GET("/all", controller.GetAllShops)
+	shopGroup := router.Group("/api/v1/iam/shops")
+	shopGroup.GET("", controller.GetAllShops)
 	shopGroup.POST("", controller.CreateShop)
 
 	// swagger

@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0">Your Shops</h5>
+  <div class="d-flex justify-content-center align-items-center">
+    <form>
+      <div class="me-2 row">
+        <div class="col-xs-3 col-sm-auto">
+          <input
+            id="table-filtering-search"
+            class="form-control"
+            type="text"
+            [formControl]="filter"
+            placeholder="Search by name"
+          />
+        </div>
+      </div>
+    </form>
+    <button class="btn btn-outline-primary mb-2 me-2" (click)="openModal(content)">
+	Create New Shop
+    </button>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Role</th>
+      <th scope="col">Status</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (shop of shopData$ | async; track shop.name; let i = $index) {
+    <tr>
+      <th scope="row">{{ i + 1 }}</th>
+      <td><ngb-highlight [result]="shop.name" [term]="filter.value" /></td>
+      <td>
+        <span class="badge rounded-pill text-bg-info">{{ shop.role }}</span>
+      </td>
+      <td>
+        <span
+          class="badge rounded-pill"
+          [ngClass]="shop.isActive ? 'text-bg-success' : 'text-bg-danger'"
+        >
+          {{ shop.isActive ? "ACTIVE" : "INACTIVE" }}</span
+        >
+      </td>
+        <td>
+            <button
+            class="btn btn-sm btn-outline-primary me-2"
+            [routerLink]="['/shops', shop.id]"
+            >
+            View
+            </button>
+            <button
+            class="btn btn-sm btn-outline-secondary me-2"
+            (click)="startWorkOnShop(shop.id)"
+            >
+            Edit
+            </button>
+            <button
+            class="btn btn-sm btn-outline-danger"
+            (click)="leaveShop(shop.id)"
+            >
+            Leave 
+            </button>
+    </tr>
+    } @empty {
+    <tr>
+      <td colspan="4" style="text-align: center">No countries found</td>
+    </tr>
+    }
+  </tbody>
+</table>
+
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">Creating New Shop</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<form cForm>
+                <c-input-group class="mb-3">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input autoComplete="current-shopName" name="shopName" cFormControl placeholder="Shop Name" [(ngModel)]="shopName" />
+                </c-input-group>
+                <c-input-group class="mb-3">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input
+                    autoComplete="current-shopDomain"
+                    cFormControl
+                    placeholder="Shop Domain"
+                    type="text"
+                    name="shopDomain"
+                    [(ngModel)]="shopDomain"
+                  />
+                </c-input-group>
+              </form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+        <button type="button" class="btn btn-primary" (click)="createNewShop()">Create</button>
+	</div>
+</ng-template>

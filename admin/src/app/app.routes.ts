@@ -28,7 +28,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'home',
+    path: '',
     component: LayoutComponent,
     children: [
       {
@@ -37,6 +37,11 @@ export const routes: Routes = [
           import('./pages/staff-management/staff-management.routes').then(
             (m) => m.routes
           ),
+      },
+      {
+        path: 'home',
+        loadChildren: () =>
+          import('./pages/home/home.routes').then((m) => m.routes),
       },
     ],
   },

@@ -73,7 +73,7 @@ export class UserService {
   }
 
   createStaff(data: UserCreate) {
-    const raw = localStorage.getItem(this.authKey);
+    const raw = global.localStorage.getItem(this.authKey);
     if (!raw) {
       throw new Error('No auth token found');
     }
@@ -85,6 +85,26 @@ export class UserService {
       headers: {
         'X-API-SECRET-TOKEN': token,
         'X-API-USER-ID': id,
+      },
+    });
+  }
+
+  getAllShops(authToken: string) {
+    return this.http.get(`${this.BASE_URL}/shops`, {
+      headers: {
+        "Authorization": `Bearer ${authToken}`,
+      },
+    });
+  }
+
+  createNewShop(name: string, domain: string, authToken: string) {
+  
+    return this.http.post(`${this.BASE_URL}/shops`, {
+      name,
+      slug: domain,
+    }, {
+      headers: {
+        "Authorization": `Bearer ${authToken}`,
       },
     });
   }
