@@ -20,7 +20,7 @@ import {
   FormControlDirective,
   ButtonDirective,
 } from '@coreui/angular';
-import { UserService } from '../../../services/user.service';
+import { UserService } from '../../../../services/user.service';
 import { UserCreate } from '../../../types';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -56,21 +56,6 @@ export class CreateComponent {
   };
 
   onSubmitButton(event: MouseEvent) {
-    this.userService.createStaff(this.user).subscribe(
-      () => {
-        this.toast.success('Create staff successfully');
-        this.user = {
-          username: '',
-          email: '',
-          firstName: '',
-          lastName: '',
-        };
-      },
-      (err) => {
-        console.log(err);
-        this.toast.error('Create staff failed', err.error.error);
-      }
-    );
 
     event.stopPropagation();
   }

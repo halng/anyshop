@@ -6,7 +6,7 @@
 */
 
 import { LoginComponent } from './pages/login/login.component';
-import { UserService } from './services/user.service';
+import { UserService } from '../services/user.service';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
@@ -61,7 +61,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.userService.isLogin()) {
+    if (this.userService.isAuthenticated$) {
       this.router.navigate(['/home']);
     } else {
       this.router.navigate(['/login']);

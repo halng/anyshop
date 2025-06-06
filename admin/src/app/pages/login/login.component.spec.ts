@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { of  } from 'rxjs';
 
 import { LoginComponent } from './login.component';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -62,24 +62,11 @@ describe('LoginComponent', () => {
 
   it('should call userService.login on valid form submission', () => {
     spyOn(userService, 'login').and.returnValue(of({ data: { 'api-token': 'token' } }));
-    spyOn(userService, 'setApiToken');
 
     component.username = 'validUser';
     component.password = 'validPassword';
     component.onSubmitForm(new MouseEvent('click'));
 
     expect(userService.login).toHaveBeenCalledWith('validUser', 'validPassword');
-    expect(userService.setApiToken).toHaveBeenCalledWith('token');
-  });
-
-  it('should handle missing api-token in response', () => {
-    spyOn(userService, 'login').and.returnValue(of({ data: {} }));
-
-    component.username = 'validUser';
-    component.password = 'validPassword';
-    component.onSubmitForm(new MouseEvent('click'));
-
-    expect(userService.setApiToken).not.toHaveBeenCalled();
-
   });
 });

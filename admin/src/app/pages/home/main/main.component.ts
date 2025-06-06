@@ -1,5 +1,12 @@
+/*
+* *****************************************************************************************
+* Copyright 2024 By ANYSHOP Project 
+* Licensed under the Apache License, Version 2.0;
+* *****************************************************************************************
+*/
+
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from './../../../services/user.service';
+import { UserService } from '../../../../services/user.service';
 import { Component, inject, OnInit, TemplateRef } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { AsyncPipe, CommonModule } from '@angular/common';
@@ -56,28 +63,8 @@ export class MainComponent implements OnInit {
     });
   }
 
-  getToken() {
-    const authData = localStorage.getItem(this.userService.authKey);
-    if (!authData) {
-      this.toast.error('You are not logged in. Please login first.', 'Error');
-      this.router.navigate(['/login']);
-      return;
-    }
-    const parsedAuthData = JSON.parse(authData);
-    if (!parsedAuthData || !parsedAuthData.token) {
-      this.toast.error(
-        'Invalid authentication data. Please login again.',
-        'Error'
-      );
-      this.router.navigate(['/login']);
-      return;
-    }
-    return parsedAuthData.token;
-  }
-
   ngOnInit(): void {
-    const token = this.getToken();
-    this.userService.getAllShops(token).subscribe({
+    this.userService.getAllShops().subscribe({
       next: (response: any) => {
         if (response && response.data && Array.isArray(response.data)) {
           this.shopData = response.data.map((shop: any) => ({
@@ -130,13 +117,12 @@ export class MainComponent implements OnInit {
   }
 
   createNewShop() {
-   const token = this.getToken();
    if (this.shopDomain.length < 3 ||this.shopName.length < 3) {
      this.toast.error('Shop name and domain must be at least 3 characters long.', 'Error');
      return;
    }
 
-    this.userService.createNewShop(this.shopName, this.shopDomain, token).subscribe({
+    this.userService.createNewShop(this.shopName, this.shopDomain).subscribe({
       next: (response: any) => {
         if (response) {
           this.toast.success('Shop created successfully!', 'Success');

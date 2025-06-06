@@ -6,7 +6,7 @@
 */
 
 import { Component } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { Router } from '@angular/router';
 import { NgStyle } from '@angular/common';
 import { IconDirective } from '@coreui/icons-angular';
@@ -81,19 +81,9 @@ export class LoginComponent {
             );
             return;
           } else {
-            
-            // set api token to local storage
-            localStorage.setItem(
-              this.userService.authKey,
-              JSON.stringify(data)
-            );
             this.toast.success('Login successfully. Redirecting...');
             this.router.navigate(['/home']);
           }
-        },
-        (err) => {
-          const error = err.error.error;
-          this.toast.error(error);
         }
       );
     }

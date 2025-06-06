@@ -1,3 +1,10 @@
+/*
+* *****************************************************************************************
+* Copyright 2024 By ANYSHOP Project 
+* Licensed under the Apache License, Version 2.0;
+* *****************************************************************************************
+*/
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainComponent } from './main.component';

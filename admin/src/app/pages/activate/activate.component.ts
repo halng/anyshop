@@ -1,6 +1,13 @@
+/*
+* *****************************************************************************************
+* Copyright 2024 By ANYSHOP Project 
+* Licensed under the Apache License, Version 2.0;
+* *****************************************************************************************
+*/
+
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../../services/user.service';
 import { NgIf } from '@angular/common';
 
 @Component({
