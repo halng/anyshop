@@ -19,26 +19,23 @@ var (
 )
 
 type ACL struct {
-	ShopId      string      `json:"shop_id"`
-	Role        models.Role `json:"role"`
-	Permissions []string    `json:"permissions"`
+	ShopId string `json:"shop_id"`
+	Role   string `json:"role"`
 }
 
-func getAclsFromPolicies(acls []models.AccessPolicy) []ACL {
+func getAcls(acls []models.ShopUser) []ACL {
 	var result []ACL
 
 	for _, policy := range acls {
 		acl := ACL{
-			ShopId:      policy.ShopUser.ShopID.String(),
-			Role:        policy.ShopUser.Role,
-			Permissions: []string{policy.Action},
+			ShopId: policy.ShopID.String(),
+			Role:   policy.Role.Name,
 		}
 
 		// Check if the ACL for this shop already exists
 		exists := false
-		for i, existingACL := range result {
+		for _, existingACL := range result {
 			if existingACL.ShopId == acl.ShopId && existingACL.Role == acl.Role {
-				result[i].Permissions = append(result[i].Permissions, acl.Permissions...)
 				exists = true
 				break
 			}
@@ -52,9 +49,9 @@ func getAclsFromPolicies(acls []models.AccessPolicy) []ACL {
 	return result
 }
 
-func GenerateJWT(id string, username string, acls []models.AccessPolicy) (string, error) {
+func GenerateJWT(id string, username string, acls []models.ShopUser) (string, error) {
 	apiSecret := os.Getenv(EnvApiSecretKey)
-	acl := getAclsFromPolicies(acls)
+	acl := getAcls(acls)
 
 	claims := jwt.MapClaims{
 		"sub":  id,
@@ -68,4 +65,35 @@ func GenerateJWT(id string, username string, acls []models.AccessPolicy) (string
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(apiSecret))
+}
+
+func getClaimsFromJWT(tokenString string) (jwt.MapClaims, error) {
+	apiSecret := os.Getenv(EnvApiSecretKey)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(apiSecret), nil
+	})
+
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, jwt.ErrTokenMalformed
+	}
+
+	return claims, nil
+}
+
+func ExtractJWT(tokenString string) (string, string, error) {
+
+	claims, err := getClaimsFromJWT(tokenString)
+	if err != nil {
+		return "", "", err
+	}
+
+	id := claims["sub"].(string)
+	username := claims["name"].(string)
+
+	return id, username, nil
 }

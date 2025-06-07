@@ -35,12 +35,14 @@ const (
 	AccountInactive      = "Account is inactive. Please check your email to activate your account"
 	InvalidToken         = "Invalid token. Please check your activation link or token"
 	AccountActivated     = "Account activated successfully"
+	ShopAlreadyExists    = "Shop with name: %s or slug: %s already exists"
 	// define key
 	ApiTokenRequestHeader  = "X-API-SECRET-TOKEN"
 	ApiUserIdRequestHeader = "X-API-USER-ID"
 	ApiUserRequestHeader   = "X-API-USER"
 	ApiUserRole            = "X-API-USER-ROLE"
 	ApiOriginMethod        = "X-API-ORIGIN-METHOD"
+	Authorization          = "Authorization"
 
 	ActiveNewUserAction = "ACTIVATE_NEW_STAFF"
 

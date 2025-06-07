@@ -43,3 +43,11 @@ func (role *Role) BeforeSave() error {
 	role.UpdateBy = constants.DefaultCreator
 	return nil
 }
+
+func GetRoleByName(name string) (*Role, error) {
+	var role Role
+	if err := db.DB.Postgres.Where("name = ?", name).First(&role).Error; err != nil {
+		return nil, err
+	}
+	return &role, nil
+}

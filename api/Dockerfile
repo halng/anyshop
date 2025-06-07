@@ -10,7 +10,7 @@ COPY src /workdir/server/src
 
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:21-jdk-alpine AS prod
+FROM eclipse-temurin:21-jre-alpine AS prod
 
 RUN adduser -D runner
 
