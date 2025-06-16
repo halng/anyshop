@@ -24,7 +24,7 @@ import (
 )
 
 func TestRegisterHandler(t *testing.T) {
-	path := "/api/v1/auth/register"
+	path := "/api/v1/iam/register"
 	router := integration.SetUpRouter()
 
 	router.POST(path, handlers2.Register)

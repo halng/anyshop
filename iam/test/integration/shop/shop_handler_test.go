@@ -8,8 +8,8 @@
 package shop
 
 import (
+	handlers2 "github.com/halng/anyshop/controller"
 	"github.com/halng/anyshop/test/integration"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
@@ -24,9 +24,16 @@ func TestMain(m *testing.M) {
 }
 
 func TestGetAllShops(t *testing.T) {
-	assert.Equal(t, 1, 1)
+	url := "/api/v1/iam/shops"
+	router := integration.SetUpRouter()
+
+	router.GET(url, handlers2.GetAllShops)
+
 }
 
 func TestCreateShop(t *testing.T) {
-	assert.Equal(t, 1, 1)
+	url := "/api/v1/iam/shops"
+	router := integration.SetUpRouter()
+
+	router.POST(url, handlers2.GetAllShops)
 }

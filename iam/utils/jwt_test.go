@@ -51,27 +51,14 @@ func TestGenerateJWT(t *testing.T) {
 			Name: "MANAGER",
 		}
 		// Test JWT with ACLs
-		acls := []models.AccessPolicy{
+		acls := []models.ShopUser{
 			{
-				Action: "read",
-				ShopUser: models.ShopUser{
-					ShopID: uuid.New(),
-					Role:   roleAdmin,
-				},
+				ShopID: uuid.New(),
+				Role:   roleAdmin,
 			},
 			{
-				Action: "write",
-				ShopUser: models.ShopUser{
-					ShopID: uuid.New(),
-					Role:   roleAdmin,
-				},
-			},
-			{
-				Action: "delete",
-				ShopUser: models.ShopUser{
-					ShopID: uuid.New(),
-					Role:   roleManager,
-				},
+				ShopID: uuid.New(),
+				Role:   roleManager,
 			},
 		}
 
