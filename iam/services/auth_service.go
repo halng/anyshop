@@ -88,7 +88,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	acls, err := models.GetAllAccessPoliciesByUserId(user.ID)
+	acls, err := models.GetAllRole(user.ID.String())
 
 	if err != nil {
 		logging.LOGGER.Error("Cannot get role for user %s ", zap.Any("user", user.ID.String()))

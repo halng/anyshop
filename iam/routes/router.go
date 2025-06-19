@@ -12,8 +12,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/halng/anyshop/constants"
+	"github.com/halng/anyshop/controller"
 	"github.com/halng/anyshop/docs"
-	"github.com/halng/anyshop/handlers"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -31,9 +31,14 @@ func Routes() *gin.Engine {
 
 	// auth routes
 	authGroup := router.Group("/api/v1/iam")
-	authGroup.POST("/login", handlers.Login)
-	authGroup.POST("/register", handlers.Register)
-	authGroup.POST("/activate", handlers.Activate)
+	authGroup.POST("/login", controller.Login)
+	authGroup.POST("/register", controller.Register)
+	authGroup.POST("/activate", controller.Activate)
+
+	// shop routes
+	shopGroup := router.Group("/api/v1/iam/shops")
+	shopGroup.GET("", controller.GetAllShops)
+	shopGroup.POST("", controller.CreateShop)
 
 	// swagger
 	docs.SwaggerInfo.BasePath = "/api/v1/iam"
