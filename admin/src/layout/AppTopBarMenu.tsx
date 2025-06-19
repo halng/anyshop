@@ -1,13 +1,10 @@
 "use client";
-import React, { useContext } from "react";
+import React from "react";
 import { Menubar } from "primereact/menubar";
 import { InputText } from "primereact/inputtext";
 import Link from "next/link";
-import { LayoutContext } from "./context/layoutcontext";
 
 const AppTopBarMenu = () => {
-  const { layoutConfig } =
-    useContext(LayoutContext);
   const nestedMenuitems = [
     {
       label: "Customers",
@@ -98,9 +95,7 @@ const AppTopBarMenu = () => {
     return (
       <Link href="/" className="layout-topbar-logo">
         <img
-          src={`/layout/images/logo-${
-            layoutConfig.colorScheme !== "light" ? "white" : "dark"
-          }.svg`}
+          src={`/layout/images/anyshop.svg`}
           width="47.22px"
           height={"35px"}
           alt="logo"

@@ -1,20 +1,20 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 
 import { StyleClass } from 'primereact/styleclass';
 import { Button } from 'primereact/button';
 import { Ripple } from 'primereact/ripple';
 import { Divider } from 'primereact/divider';
-import { LayoutContext } from '../layout/context/layoutcontext';
 import { NodeRef } from '@/types';
 import { classNames } from 'primereact/utils';
+import { useRouter } from 'next/navigation';
 
 const LandingPage = () => {
     const [isHidden, setIsHidden] = useState(false);
-    const { layoutConfig } = useContext(LayoutContext);
     const menuRef = useRef<HTMLElement | null>(null);
+    const router = useRouter()
 
     const toggleMenuItemClick = () => {
         setIsHidden((prevState) => !prevState);
@@ -25,8 +25,8 @@ const LandingPage = () => {
             <div id="home" className="landing-wrapper overflow-hidden">
                 <div className="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static">
                     <Link href="/" className="flex align-items-center">
-                        <img src={`/layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="Sakai Logo" height="50" className="mr-0 lg:mr-2" />
-                        <span className="text-900 font-medium text-2xl line-height-3 mr-8">SAKAI</span>
+                        <img src={`/layout/images/anyshop.svg`} alt="Anyshop Logo" height="50" className="mr-0 lg:mr-2" />
+                        <span className="text-900 font-medium text-2xl line-height-3 mr-8">ANYSHOP</span>
                     </Link>
                     <StyleClass nodeRef={menuRef as NodeRef} selector="@next" enterClassName="hidden" leaveToClassName="hidden" hideOnOutsideClick>
                         <i ref={menuRef} className="pi pi-bars text-4xl cursor-pointer block lg:hidden text-700"></i>
@@ -59,8 +59,8 @@ const LandingPage = () => {
                             </li>
                         </ul>
                         <div className="flex justify-content-between lg:block border-top-1 lg:border-top-none surface-border py-3 lg:py-0 mt-3 lg:mt-0">
-                            <Button label="Login" text rounded className="border-none font-light line-height-2 text-blue-500"></Button>
-                            <Button label="Register" rounded className="border-none ml-5 font-light line-height-2 bg-blue-500 text-white"></Button>
+                            <Button label="Login" text rounded className="border-none font-light line-height-2 text-blue-500" onClick={() => router.push("/login")}></Button>
+                            <Button label="Register" text rounded className="border-none ml-5 font-light line-height-2 bg-blue-500" onClick={() => router.push("/register")}></Button>
                         </div>
                     </div>
                 </div>
@@ -505,8 +505,8 @@ const LandingPage = () => {
                     <div className="grid justify-content-between">
                         <div className="col-12 md:col-2" style={{ marginTop: '-1.5rem' }}>
                             <Link href="/" className="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
-                                <img src={`/layout/images/${layoutConfig.colorScheme === 'light' ? 'logo-dark' : 'logo-white'}.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
-                                <span className="font-medium text-3xl text-900">SAKAI</span>
+                                <img src={`/layout/images/anyshop.svg`} alt="footer sections" width="50" height="50" className="mr-2" />
+                                <span className="font-medium text-3xl text-900">ANYSHOP</span>
                             </Link>
                         </div>
 
